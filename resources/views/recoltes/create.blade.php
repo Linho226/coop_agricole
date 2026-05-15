@@ -1,0 +1,59 @@
+@extends('layouts.app')
+@section('title','Nouvelle récolte')
+@section('page-title','Enregistrer une récolte')
+
+@section('content')
+<div class="card" style="max-width:600px;">
+    <div class="card-header"><strong><i class="bi bi-basket2-fill text-warning me-1"></i> Nouvelle récolte</strong></div>
+    <div class="card-body">
+        <form method="POST" action="{{ route('recoltes.store') }}">
+            @csrf
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Produit <span class="text-danger">*</span></label>
+                    <select name="produit_id" class="form-select @error('produit_id') is-invalid @enderror" required>
+                        <option value="">-- Sélectionner --</option>
+                        @foreach($produits as $p)
+                        <option value="{{ $p->id }}" @selected(old('produit_id')==$p->id)>{{ $p->nom }} ({{ $p->unite }})</option>
+                        @endforeach
+                    </select>
+                    @error('produit_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Membre <span class="text-danger">*</span></label>
+                    <select name="membre_id" class="form-select @error('membre_id') is-invalid @enderror" required>
+                        <option value="">-- Sélectionner --</option>
+                        @foreach($membres as $m)
+                        <option value="{{ $m->id }}" @selected(old('membre_id')==$m->id)>{{ $m->nom_complet }}</option>
+                        @endforeach
+                    </select>
+                    @error('membre_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Quantité <span class="text-danger">*</span></label>
+                    <input type="number" name="quantite" class="form-control" step="0.001"
+                           value="{{ old('quantite') }}" min="0.001" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date de récolte <span class="text-danger">*</span></label>
+                    <input type="date" name="date_recolte" class="form-control"
+                           value="{{ old('date_recolte', date('Y-m-d')) }}" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Parcelle</label>
+                    <input type="text" name="parcelle" class="form-control" value="{{ old('parcelle') }}">
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Observation</label>
+                    <textarea name="observation" class="form-control" rows="2">{{ old('observation') }}</textarea>
+                </div>
+            </div>
+            <hr>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-warning"><i class="bi bi-check-lg"></i> Enregistrer</button>
+                <a href="{{ route('recoltes.index') }}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+@endsection
