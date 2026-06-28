@@ -6,6 +6,8 @@ use App\Models\Recolte;
 use App\Models\Membre;
 use App\Models\Produit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class RecolteController extends Controller
 {
@@ -46,8 +48,13 @@ class RecolteController extends Controller
             'observation' => 'nullable|string',
         ]);
 
-        $data['user_id'] = auth()->id();
-        Recolte::create($data);
+        DB::transaction(function () use ($data) {
+            $produit = Produit::whereKey($data['produit_id'])->lockForUpdate()->firstOrFail();
+            $produit->increment('stock_disponible', $data['quantite']);
+
+            $data['user_id'] = auth()->id();
+            Recolte::create($data);
+        });
 
         return redirect()->route('recoltes.index')->with('success', 'Récolte enregistrée.');
     }
@@ -70,13 +77,50 @@ class RecolteController extends Controller
             'observation' => 'nullable|string',
         ]);
 
-        $recolte->update($data);
+        DB::transaction(function () use ($recolte, $data) {
+            $recolte->refresh();
+
+            if ((int) $recolte->produit_id === (int) $data['produit_id']) {
+                $produit = Produit::whereKey($recolte->produit_id)->lockForUpdate()->firstOrFail();
+                $difference = (float) $data['quantite'] - (float) $recolte->quantite;
+                $this->adjustStock($produit, $difference);
+            } else {
+                $ancienProduit = Produit::whereKey($recolte->produit_id)->lockForUpdate()->firstOrFail();
+                $nouveauProduit = Produit::whereKey($data['produit_id'])->lockForUpdate()->firstOrFail();
+
+                $this->adjustStock($ancienProduit, - (float) $recolte->quantite);
+                $this->adjustStock($nouveauProduit, (float) $data['quantite']);
+            }
+
+            $recolte->update($data);
+        });
+
         return redirect()->route('recoltes.index')->with('success', 'Récolte modifiée.');
     }
 
     public function destroy(Recolte $recolte)
     {
-        $recolte->delete();
+        DB::transaction(function () use ($recolte) {
+            $recolte->refresh();
+            $produit = Produit::whereKey($recolte->produit_id)->lockForUpdate()->firstOrFail();
+
+            $this->adjustStock($produit, - (float) $recolte->quantite);
+            $recolte->delete();
+        });
+
         return redirect()->route('recoltes.index')->with('success', 'Récolte supprimée.');
+    }
+
+    private function adjustStock(Produit $produit, float $quantite): void
+    {
+        $nouveauStock = (float) $produit->stock_disponible + $quantite;
+
+        if ($nouveauStock < 0) {
+            throw ValidationException::withMessages([
+                'quantite' => "Impossible de retirer cette récolte : le stock de {$produit->nom} deviendrait négatif.",
+            ]);
+        }
+
+        $produit->update(['stock_disponible' => $nouveauStock]);
     }
 }

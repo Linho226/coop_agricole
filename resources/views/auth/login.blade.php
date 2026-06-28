@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html lang="fr" data-bs-theme="light">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion — CoopAgricole</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+    <script src="{{ asset('js/system-theme.js') }}"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         :root { --accent: #070439; --accent-light: #ede9fe; }
-        [data-bs-theme="dark"] { --accent-light: rgba(79,70,229,.18); }
+        [data-bs-theme="dark"] {
+            --accent: #8ea2ff;
+            --accent-light: rgba(142,162,255,.18);
+            --bs-body-bg: #111827;
+            --bs-body-color: #e8edf7;
+            --bs-secondary-color: #a8b3c7;
+            --bs-border-color: #2d3a4d;
+        }
 
         body {
             min-height: 100vh;
@@ -29,9 +37,12 @@
             overflow: hidden;
             box-shadow: 0 20px 60px rgba(0,0,0,.12);
         }
+        [data-bs-theme="dark"] .login-wrapper {
+            box-shadow: 0 24px 70px rgba(0,0,0,.28);
+        }
         .login-left {
             flex: 1;
-            background: linear-gradient(145deg, var(--accent) 0%, #7c3aed 100%);
+            background: linear-gradient(145deg, #172554 0%, #4f46e5 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -65,12 +76,20 @@
             flex-direction: column;
             justify-content: center;
         }
+        [data-bs-theme="dark"] .login-right {
+            background: #172132;
+        }
         .login-right h4 { font-size: 1.35rem; font-weight: 700; letter-spacing: -.3px; }
 
         .form-control, .input-group-text {
             border-color: var(--bs-border-color);
             background-color: var(--bs-body-bg);
             color: var(--bs-body-color);
+        }
+        [data-bs-theme="dark"] .form-control,
+        [data-bs-theme="dark"] .input-group-text {
+            background-color: #152033;
+            border-color: #34445d;
         }
         .form-control:focus { border-color: var(--accent); box-shadow: 0 0 0 .2rem rgba(79,70,229,.15); }
 
@@ -100,8 +119,8 @@
 <body>
 
     <!-- Toggle thème -->
-    <button id="themeToggle" class="btn btn-outline-secondary">
-        <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+    <button id="themeToggle" class="btn btn-outline-secondary" title="Thème système">
+        <i class="bi bi-brightness-high-fill" id="themeIcon"></i>
     </button>
 
     <div class="login-wrapper">
@@ -163,24 +182,5 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const html    = document.documentElement;
-        const btn     = document.getElementById('themeToggle');
-        const icon    = document.getElementById('themeIcon');
-        const STORAGE = 'coop-theme';
-
-        function applyTheme(theme) {
-            html.setAttribute('data-bs-theme', theme);
-            localStorage.setItem(STORAGE, theme);
-            icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
-        }
-
-        const saved = localStorage.getItem(STORAGE)
-            || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        applyTheme(saved);
-        btn.addEventListener('click', () =>
-            applyTheme(html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark')
-        );
-    </script>
 </body>
 </html>

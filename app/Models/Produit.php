@@ -9,7 +9,21 @@ class Produit extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nom', 'unite', 'description', 'image'];
+    protected $fillable = [
+        'nom',
+        'unite',
+        'prix_unitaire',
+        'stock_disponible',
+        'publie',
+        'description',
+        'image',
+    ];
+
+    protected $casts = [
+        'prix_unitaire' => 'decimal:2',
+        'stock_disponible' => 'decimal:3',
+        'publie' => 'boolean',
+    ];
 
     public function recoltes()
     {
@@ -19,5 +33,10 @@ class Produit extends Model
     public function ventes()
     {
         return $this->hasMany(Vente::class);
+    }
+
+    public function commandeItems()
+    {
+        return $this->hasMany(CommandeItem::class);
     }
 }

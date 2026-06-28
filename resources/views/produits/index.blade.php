@@ -14,7 +14,7 @@
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead>
-                    <tr><th>#</th><th>Image</th><th>Nom</th><th>Unité</th><th>Description</th><th>Actions</th></tr>
+                    <tr><th>#</th><th>Image</th><th>Nom</th><th>Prix</th><th>Stock</th><th>Catalogue</th><th>Actions</th></tr>
                 </thead>
                 <tbody>
                     @forelse($produits as $p)
@@ -31,8 +31,13 @@
                             @endif
                         </td>
                         <td class="fw-semibold">{{ $p->nom }}</td>
-                        <td><span class="badge bg-secondary">{{ $p->unite }}</span></td>
-                        <td>{{ Str::limit($p->description, 50) ?? '—' }}</td>
+                        <td>{{ number_format($p->prix_unitaire, 0, ',', ' ') }} F / {{ $p->unite }}</td>
+                        <td>{{ number_format($p->stock_disponible, 2, ',', ' ') }} {{ $p->unite }}</td>
+                        <td>
+                            <span class="badge bg-{{ $p->publie ? 'success' : 'secondary' }}">
+                                {{ $p->publie ? 'Publié' : 'Masqué' }}
+                            </span>
+                        </td>
                         <td>
                             <a href="{{ route('produits.show', $p) }}" class="btn btn-sm btn-outline-info" title="Détail"><i class="bi bi-eye"></i></a>
                             <a href="{{ route('produits.edit', $p) }}" class="btn btn-sm btn-outline-warning" title="Modifier"><i class="bi bi-pencil"></i></a>
@@ -44,7 +49,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="6" class="text-center text-muted py-4">Aucun produit.</td></tr>
+                    <tr><td colspan="7" class="text-center text-muted py-4">Aucun produit.</td></tr>
                     @endforelse
                 </tbody>
             </table>

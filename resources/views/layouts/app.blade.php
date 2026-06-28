@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr" data-bs-theme="light">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'CoopAgricole')</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,">
+    <script src="{{ asset('js/system-theme.js') }}"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
@@ -55,6 +56,10 @@
         <a href="{{ route('ventes.index') }}"
            class="nav-link {{ request()->routeIs('ventes.*') ? 'active' : '' }}">
             <i class="bi bi-cart-check-fill"></i> Ventes
+        </a>
+        <a href="{{ route('commandes.index') }}"
+           class="nav-link {{ request()->routeIs('commandes.*') ? 'active' : '' }}">
+            <i class="bi bi-bag-check-fill"></i> Commandes
         </a>
         <a href="{{ route('depenses.index') }}"
            class="nav-link {{ request()->routeIs('depenses.*') ? 'active' : '' }}">
@@ -108,8 +113,8 @@
         </div>
         <div class="d-flex align-items-center gap-2">
             <!-- Toggle clair / sombre -->
-            <button id="themeToggle" class="btn btn-outline-secondary" title="Mode sombre">
-                <i class="bi bi-moon-stars-fill" id="themeIcon"></i>
+            <button id="themeToggle" class="btn btn-outline-secondary" title="Thème système">
+                <i class="bi bi-brightness-high-fill" id="themeIcon"></i>
             </button>
             <!-- Menu utilisateur -->
             <div class="dropdown">
@@ -168,25 +173,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const html    = document.documentElement;
-    const btn     = document.getElementById('themeToggle');
-    const icon    = document.getElementById('themeIcon');
-    const STORAGE = 'coop-theme';
-
-    function applyTheme(theme) {
-        html.setAttribute('data-bs-theme', theme);
-        localStorage.setItem(STORAGE, theme);
-        icon.className = theme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
-        btn.title = theme === 'dark' ? 'Mode clair' : 'Mode sombre';
-    }
-
-    const saved = localStorage.getItem(STORAGE)
-        || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    applyTheme(saved);
-    btn.addEventListener('click', () =>
-        applyTheme(html.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark')
-    );
-
     // ── Sidebar mobile toggle ────────────────────────
     const sidebar  = document.querySelector('.sidebar');
     const overlay  = document.getElementById('sidebarOverlay');

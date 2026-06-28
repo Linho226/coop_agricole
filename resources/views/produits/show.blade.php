@@ -27,6 +27,26 @@
                     <span class="badge bg-secondary fs-6">{{ $produit->unite }}</span>
                 </div>
 
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div class="border rounded p-2">
+                            <div class="text-muted small">Prix public</div>
+                            <div class="fw-bold text-success">{{ number_format($produit->prix_unitaire, 0, ',', ' ') }} F</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded p-2">
+                            <div class="text-muted small">Stock public</div>
+                            <div class="fw-bold">{{ number_format($produit->stock_disponible, 2, ',', ' ') }} {{ $produit->unite }}</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <span class="badge bg-{{ $produit->publie ? 'success' : 'secondary' }}">
+                            {{ $produit->publie ? 'Visible dans le catalogue' : 'Masqué du catalogue' }}
+                        </span>
+                    </div>
+                </div>
+
                 @if($produit->description)
                 <p class="text-muted mb-3" style="font-size:.88rem;">{{ $produit->description }}</p>
                 @else

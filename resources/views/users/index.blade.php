@@ -5,7 +5,7 @@
 @section('content')
 <div class="card">
     <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <strong><i class="bi bi-person-lock text-dark me-1"></i> Utilisateurs</strong>
+        <strong><i class="bi bi-person-lock text-body me-1"></i> Utilisateurs</strong>
         <a href="{{ route('users.create') }}" class="btn btn-dark btn-sm">
             <i class="bi bi-plus-lg"></i> Nouvel utilisateur
         </a>

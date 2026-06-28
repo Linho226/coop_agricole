@@ -38,4 +38,11 @@ class Membre extends Model
     {
         return $this->hasMany(Recolte::class);
     }
+
+    public function reunions()
+    {
+        return $this->belongsToMany(Reunion::class, 'membre_reunion')
+            ->withPivot('present')
+            ->withTimestamps();
+    }
 }

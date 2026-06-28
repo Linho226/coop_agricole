@@ -24,9 +24,14 @@ class ProduitController extends Controller
         $data = $request->validate([
             'nom'         => 'required|string|max:150|unique:produits,nom',
             'unite'       => 'required|string|max:20',
+            'prix_unitaire' => 'required|numeric|min:0',
+            'stock_disponible' => 'required|numeric|min:0',
+            'publie'      => 'nullable|boolean',
             'description' => 'nullable|string',
             'image'       => 'nullable|image|max:2048',
         ]);
+
+        $data['publie'] = $request->boolean('publie', true);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('produits', 'public');
@@ -61,9 +66,14 @@ class ProduitController extends Controller
         $data = $request->validate([
             'nom'         => 'required|string|max:150|unique:produits,nom,' . $produit->id,
             'unite'       => 'required|string|max:20',
+            'prix_unitaire' => 'required|numeric|min:0',
+            'stock_disponible' => 'required|numeric|min:0',
+            'publie'      => 'nullable|boolean',
             'description' => 'nullable|string',
             'image'       => 'nullable|image|max:2048',
         ]);
+
+        $data['publie'] = $request->boolean('publie');
 
         if ($request->hasFile('image')) {
             if ($produit->image) Storage::disk('public')->delete($produit->image);

@@ -25,6 +25,24 @@
                     <option value="botte" @selected($produit->unite=='botte')>Botte</option>
                 </select>
             </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Prix unitaire</label>
+                    <input type="number" name="prix_unitaire" class="form-control @error('prix_unitaire') is-invalid @enderror"
+                           value="{{ old('prix_unitaire', $produit->prix_unitaire) }}" min="0" step="1" required>
+                    @error('prix_unitaire')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Stock disponible</label>
+                    <input type="number" name="stock_disponible" class="form-control @error('stock_disponible') is-invalid @enderror"
+                           value="{{ old('stock_disponible', $produit->stock_disponible) }}" min="0" step="0.001" required>
+                    @error('stock_disponible')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                </div>
+            </div>
+            <div class="form-check form-switch my-3">
+                <input class="form-check-input" type="checkbox" name="publie" value="1" id="publie" @checked(old('publie', $produit->publie))>
+                <label class="form-check-label" for="publie">Publier dans le catalogue public</label>
+            </div>
             <div class="mb-3">
                 <label class="form-label">Description</label>
                 <textarea name="description" class="form-control" rows="3">{{ old('description', $produit->description) }}</textarea>

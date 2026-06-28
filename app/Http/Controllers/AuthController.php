@@ -10,7 +10,11 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect()->route('dashboard');
+            if (Auth::user()->hasRole(['admin', 'secretaire', 'comptable'])) {
+                return redirect()->route('dashboard');
+            }
+
+            return redirect()->route('public.home');
         }
         return view('auth.login');
     }
@@ -27,6 +31,15 @@ class AuthController extends Controller
                 Auth::logout();
                 return back()->withErrors(['email' => 'Votre compte est désactivé.']);
             }
+
+            if (!Auth::user()->hasRole(['admin', 'secretaire', 'comptable'])) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors(['email' => 'Accès réservé à l’administration.']);
+            }
+
             $request->session()->regenerate();
             return redirect()->intended(route('dashboard'));
         }
